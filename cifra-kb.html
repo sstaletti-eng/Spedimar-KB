@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' 'self'; font-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Cifra KB</title>
+<style>
+@font-face{font-family:'Archivo';src:url(fonts/archivo.woff2) format('woff2-variations'),url(fonts/archivo.woff2) format('woff2');font-weight:100 900;font-stretch:62% 125%;font-display:swap}
+@font-face{font-family:'JetBrains Mono';src:url(fonts/jbmono-400.woff2) format('woff2');font-weight:400;font-display:swap}
+:root{
+  --bg:#17212E; --surface:#1E2A39; --surface-2:#263447;
+  --line:rgba(232,237,243,.09); --line-2:rgba(232,237,243,.17);
+  --text:#E8EDF3; --text-2:#AAB6C5; --text-3:#7C8A9E;
+  --signal:#F5C242; --on-signal:#1C1503; --signal-soft:rgba(245,194,66,.13);
+  --ok:#4CC38A; --danger:#F2555A; --danger-soft:rgba(242,85,90,.12);
+  --label-bg:#F3F0E6; --label-ink:#17212E;
+  --font:'Archivo',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: light){
+  :root{
+    --bg:#EEF1F4; --surface:#FFFFFF; --surface-2:#E4E9EF;
+    --line:rgba(23,33,46,.10); --line-2:rgba(23,33,46,.18);
+    --text:#17212E; --text-2:#455366; --text-3:#6A788B;
+    --signal-soft:rgba(245,194,66,.22); --ok:#1F8A5B; --danger:#C8323A; --danger-soft:rgba(200,50,58,.09);
+    --label-bg:#17212E; --label-ink:#F3F0E6;
+  }
+}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.5;padding:24px 16px 60px}
+main{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.label{background:var(--label-bg);color:var(--label-ink);border-radius:4px;border-top:6px solid var(--signal);padding:14px 16px}
+.label small{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.7}
+.label h1{font-stretch:118%;font-weight:780;font-size:24px;letter-spacing:-.015em;margin:4px 0 6px}
+.label p{font-size:14px;opacity:.85;max-width:60ch}
+section{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:16px}
+h2{font-stretch:112%;font-size:16px;font-weight:720;margin-bottom:4px;display:flex;gap:10px;align-items:baseline}
+h2 .n{font-family:var(--mono);font-size:12px;color:var(--signal);font-weight:400}
+.hint{font-size:13px;color:var(--text-3);margin-bottom:12px;max-width:62ch}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:40px;padding:0 16px;border-radius:11px;font:inherit;font-size:14px;font-weight:650;border:1px solid var(--line-2);background:transparent;color:var(--text);cursor:pointer}
+.btn:hover{border-color:var(--text-3)}
+.btn.primary{background:var(--signal);border-color:var(--signal);color:var(--on-signal)}
+.btn:disabled{opacity:.45;cursor:default}
+input[type=password],input[type=text],textarea{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line-2);border-radius:7px;padding:10px 12px;font:inherit;font-size:15px;outline:0}
+input:focus,textarea:focus{border-color:var(--signal)}
+textarea{font-family:var(--mono);font-size:12.5px;min-height:260px;resize:vertical;line-height:1.5}
+label.fl{display:block;font-size:13.5px;font-weight:650;margin:12px 0 6px}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--text-2);margin-top:12px;cursor:pointer}
+.chk input{width:18px;height:18px;margin-top:2px;accent-color:#F5C242}
+.status{font-size:13.5px;margin-top:10px;min-height:1.3em}
+.status.ok{color:var(--ok)} .status.bad{color:var(--danger)}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:12px 0}
+.stats div{background:var(--surface-2);border-radius:7px;padding:8px 10px}
+.stats b{display:block;font-family:var(--mono);font-size:18px}
+.stats span{font-size:12px;color:var(--text-3)}
+.meter{height:6px;border-radius:3px;background:var(--surface-2);margin-top:8px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:var(--danger);transition:width .2s,background .2s}
+.warn{background:var(--danger-soft);border:1px solid color-mix(in srgb,var(--danger) 40%,transparent);border-radius:11px;padding:12px 14px;font-size:13.5px}
+code{font-family:var(--mono);font-size:12.5px}
+[hidden]{display:none!important}
+@media (max-width:560px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<main>
+  <div class="label">
+    <small>IT Spedimar · strumento locale</small>
+    <h1>Cifra la KB di base</h1>
+    <p>Crea o aggiorna <code>kb.enc.json</code>, il file cifrato che l'app pubblica al posto delle voci in chiaro. Tutto avviene in questo browser: la pagina non può collegarsi a internet.</p>
+  </div>
+
+  <section>
+    <h2><span class="n">01</span>Carica il contenuto</h2>
+    <p class="hint">Per modificare la KB già pubblicata apri <code>kb.enc.json</code> e decifralo con la frase attuale. La prima volta, o se tieni una copia in chiaro, apri il file JSON in chiaro.</p>
+    <div class="row">
+      <label class="btn">Apri kb.enc.json<input type="file" id="f-enc" accept=".json,application/json" hidden></label>
+      <label class="btn">Apri JSON in chiaro<input type="file" id="f-plain" accept=".json,application/json" hidden></label>
+    </div>
+    <div id="dec-box" hidden>
+      <label class="fl" for="dec-pass">Frase segreta attuale</label>
+      <div class="row"><input type="password" id="dec-pass" style="flex:1;min-width:200px" autocomplete="off"><button class="btn primary" id="dec-btn">Decifra</button></div>
+    </div>
+    <p class="status" id="st-load"></p>
+  </section>
+
+  <section id="sec-edit" hidden>
+    <h2><span class="n">02</span>Controlla e modifica</h2>
+    <p class="hint">Puoi correggere il JSON qui. Campi: <code>voci</code> (con section, title, fields), <code>avvisi</code> (level red/amber, text), <code>report</code>, <code>suggerimenti</code>, <code>assistente</code>, <code>utente</code>, <code>categorie</code>. La data di aggiornamento viene impostata a oggi.</p>
+    <div class="stats" id="stats"></div>
+    <textarea id="json" spellcheck="false"></textarea>
+    <p class="status" id="st-json"></p>
+    <div class="row" style="margin-top:6px">
+      <button class="btn" id="dl-plain">Scarica in chiaro</button>
+    </div>
+  </section>
+
+  <section id="sec-enc" hidden>
+    <h2><span class="n">03</span>Frase segreta e cifratura</h2>
+    <p class="hint">Chi conosce la frase legge tutta la KB: usa una frase lunga (almeno 16 caratteri, meglio 5 o più parole che non stanno insieme) e conservala nel tuo gestore di password. Se la perdi, la KB pubblicata non si recupera: ti serve la copia in chiaro.</p>
+    <label class="chk" id="same-wrap" hidden><input type="checkbox" id="same" checked><span>Usa la stessa frase di prima. I dispositivi già sbloccati restano sbloccati.</span></label>
+    <div id="new-pass">
+      <label class="fl" for="p1">Nuova frase segreta</label>
+      <div class="row"><input type="password" id="p1" style="flex:1;min-width:200px" autocomplete="new-password"><button class="btn" id="gen">Genera</button><button class="btn" id="show">Mostra</button></div>
+      <div class="meter"><i id="meter"></i></div>
+      <label class="fl" for="p2">Ripeti la frase</label>
+      <input type="password" id="p2" autocomplete="new-password">
+    </div>
+    <div class="row" style="margin-top:16px">
+      <button class="btn primary" id="enc-btn">Cifra e scarica kb.enc.json</button>
+    </div>
+    <p class="status" id="st-enc"></p>
+  </section>
+
+  <div class="warn">
+    <strong>Il file in chiaro non va mai pubblicato.</strong> Tienilo solo sul tuo PC (o cancellalo: la KB si può sempre riaprire da <code>kb.enc.json</code> con la frase). Nel repository carica soltanto <code>kb.enc.json</code>.
+  </div>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const ITER = 600000;
+const b64e = u8 => { let s = ''; for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(s); };
+const b64d = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+let encFile = null;          // kb.enc.json aperto
+let prev = null;             // {salt, pass} se la KB è stata decifrata
+let data = null;
+
+async function derive(pass, salt, iter, usage){
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass.normalize('NFC')), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2', hash:'SHA-256', salt, iterations:iter}, base, {name:'AES-GCM', length:256}, false, usage);
+}
+function readFile(f){ return new Promise((res,rej)=>{ const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(r.error); r.readAsText(f); }); }
+function st(id, msg, cls){ const e = $(id); e.textContent = msg; e.className = 'status' + (cls ? ' ' + cls : ''); }
+
+function validate(d){
+  if (!d || typeof d !== 'object' || Array.isArray(d)) throw new Error('il file deve contenere un oggetto JSON');
+  if (!Array.isArray(d.voci)) throw new Error('manca l\'elenco "voci"');
+  d.voci.forEach((e,i) => { if (!e || !e.section || !e.title || !e.fields || typeof e.fields !== 'object') throw new Error(`la voce n. ${i+1} non ha section, title e fields`); });
+  for (const k of ['avvisi','report','suggerimenti']) if (d[k] !== undefined && !Array.isArray(d[k])) throw new Error(`"${k}" deve essere un elenco`);
+  return d;
+}
+function loadData(d, msg){
+  data = validate(d);
+  $('json').value = JSON.stringify(data, null, 2);
+  renderStats(); $('sec-edit').hidden = false; $('sec-enc').hidden = false;
+  $('same-wrap').hidden = !prev; syncSame();
+  st('st-load', msg, 'ok'); st('st-json', ''); st('st-enc', '');
+}
+function renderStats(){
+  const d = data;
+  $('stats').innerHTML = [['voci', d.voci.length], ['avvisi', (d.avvisi||[]).length], ['report', (d.report||[]).length], ['aggiornata', d.aggiornata || '—']]
+    .map(([k,v]) => `<div><b>${String(v).replace(/[<&]/g,'')}</b><span>${k}</span></div>`).join('');
+}
+$('json').addEventListener('input', () => {
+  try { data = validate(JSON.parse($('json').value)); renderStats(); st('st-json', 'JSON valido', 'ok'); }
+  catch(e) { st('st-json', 'Da correggere: ' + e.message, 'bad'); }
+});
+
+$('f-plain').addEventListener('change', async ev => {
+  const f = ev.target.files[0]; ev.target.value = ''; if (!f) return;
+  try {
+    const d = JSON.parse(await readFile(f));
+    if (d.formato === 'spedimar-kb-cifrata') { st('st-load', 'Questo è il file cifrato: usa "Apri kb.enc.json".', 'bad'); return; }
+    if (d.custom && !d.voci) { st('st-load', 'Questo è un export di un modulo dell\'app, non la KB di base.', 'bad'); return; }
+    prev = null; encFile = null; $('dec-box').hidden = true;
+    loadData(d, `Caricato ${f.name}`);
+  } catch(e) { st('st-load', 'File non valido: ' + e.message, 'bad'); }
+});
+$('f-enc').addEventListener('change', async ev => {
+  const f = ev.target.files[0]; ev.target.value = ''; if (!f) return;
+  try {
+    const b = JSON.parse(await readFile(f));
+    if (b.formato !== 'spedimar-kb-cifrata') throw new Error('non è un kb.enc.json');
+    encFile = b; $('dec-box').hidden = false; $('dec-pass').value = ''; $('dec-pass').focus();
+    st('st-load', `Aperto ${f.name}${b.aggiornata ? ' (aggiornata al ' + b.aggiornata + ')' : ''}: inserisci la frase per decifrarlo.`);
+  } catch(e) { st('st-load', 'File non valido: ' + e.message, 'bad'); }
+});
+async function decrypt(){
+  const pass = $('dec-pass').value; if (!pass || !encFile) return;
+  $('dec-btn').disabled = true; st('st-load', 'Decifro…');
+  try {
+    const salt = b64d(encFile.kdf.salt);
+    const key = await derive(pass, salt, encFile.kdf.iterazioni, ['decrypt']);
+    const plain = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64d(encFile.iv)}, key, b64d(encFile.dati));
+    prev = {salt:encFile.kdf.salt, pass, iter:encFile.kdf.iterazioni};
+    $('dec-pass').value = ''; $('dec-box').hidden = true;
+    loadData(JSON.parse(new TextDecoder().decode(plain)), 'KB decifrata: puoi modificarla e cifrarla di nuovo.');
+  } catch(e) {
+    st('st-load', e.name === 'OperationError' ? 'Frase errata.' : 'Errore: ' + e.message, 'bad');
+  } finally { $('dec-btn').disabled = false; }
+}
+$('dec-btn').addEventListener('click', decrypt);
+$('dec-pass').addEventListener('keydown', e => { if (e.key === 'Enter') decrypt(); });
+
+function syncSame(){ $('new-pass').hidden = !!prev && $('same').checked; }
+$('same').addEventListener('change', syncSame);
+
+const ALPHA = 'abcdefghjkmnpqrstuvwxyz23456789';   // niente caratteri ambigui (0/o, 1/l/i)
+$('gen').addEventListener('click', () => {
+  const r = crypto.getRandomValues(new Uint32Array(20)); let s = '';
+  for (let i = 0; i < 20; i++) { s += ALPHA[r[i] % ALPHA.length]; if (i % 4 === 3 && i < 19) s += '-'; }
+  $('p1').value = s; $('p2').value = s; $('p1').type = 'text'; $('show').textContent = 'Nascondi'; meter();
+  st('st-enc', 'Frase generata (circa 99 bit). Copiala nel gestore di password prima di continuare.', 'ok');
+});
+$('show').addEventListener('click', () => { const t = $('p1').type === 'password' ? 'text' : 'password'; $('p1').type = t; $('show').textContent = t === 'text' ? 'Nascondi' : 'Mostra'; });
+function strength(p){
+  if (!p) return 0;
+  let pool = 0; if (/[a-z]/.test(p)) pool += 26; if (/[A-Z]/.test(p)) pool += 26; if (/\d/.test(p)) pool += 10; if (/[^a-zA-Z0-9]/.test(p)) pool += 20;
+  return Math.round(p.length * Math.log2(pool || 1));
+}
+function meter(){
+  const b = strength($('p1').value); const w = Math.min(100, b / 90 * 100);
+  $('meter').style.width = w + '%'; $('meter').style.background = b >= 70 ? 'var(--ok)' : b >= 50 ? '#F5C242' : 'var(--danger)';
+}
+$('p1').addEventListener('input', meter);
+
+$('enc-btn').addEventListener('click', async () => {
+  let d;
+  try { d = validate(JSON.parse($('json').value)); } catch(e) { st('st-enc', 'Correggi prima il JSON: ' + e.message, 'bad'); return; }
+  let pass, salt, iter = ITER;
+  if (prev && $('same').checked) { pass = prev.pass; salt = b64d(prev.salt); iter = prev.iter || ITER; }
+  else {
+    pass = $('p1').value;
+    if (pass.length < 16) { st('st-enc', 'La frase deve avere almeno 16 caratteri.', 'bad'); return; }
+    if (pass !== $('p2').value) { st('st-enc', 'Le due frasi non coincidono.', 'bad'); return; }
+    if (strength(pass) < 60) { st('st-enc', 'Frase troppo prevedibile: allungala o premi Genera.', 'bad'); return; }
+    salt = crypto.getRandomValues(new Uint8Array(16));
+  }
+  $('enc-btn').disabled = true; st('st-enc', 'Cifro…');
+  try {
+    d.aggiornata = new Date().toISOString().slice(0,10);
+    d.formato = 'spedimar-kb-sorgente';
+    const key = await derive(pass, salt, iter, ['encrypt','decrypt']);
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const ct = new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM', iv}, key, new TextEncoder().encode(JSON.stringify(d))));
+    // verifica: decifra subito quello che è stato cifrato
+    const back = JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM', iv}, key, ct)));
+    if (back.voci.length !== d.voci.length) throw new Error('verifica non riuscita');
+    const out = {formato:'spedimar-kb-cifrata', versione:1, aggiornata:d.aggiornata,
+      kdf:{nome:'PBKDF2-SHA256', iterazioni:iter, salt:b64e(salt)}, cifrario:'AES-256-GCM', iv:b64e(iv), dati:b64e(ct)};
+    download('kb.enc.json', JSON.stringify(out));
+    data = d; $('json').value = JSON.stringify(d, null, 2); renderStats();
+    prev = {salt:out.kdf.salt, pass, iter}; $('same-wrap').hidden = false; $('same').checked = true; syncSame();
+    $('p1').value = ''; $('p2').value = ''; meter();
+    st('st-enc', `Fatto: kb.enc.json con ${d.voci.length} voci, verificato. Caricalo nel repository al posto del precedente.`, 'ok');
+  } catch(e) { st('st-enc', 'Errore: ' + e.message, 'bad'); }
+  finally { $('enc-btn').disabled = false; }
+});
+$('dl-plain').addEventListener('click', () => {
+  if (!confirm('Il file in chiaro contiene tutta la KB leggibile. Salvalo solo sul tuo PC e non caricarlo mai nel repository. Continuare?')) return;
+  try { const d = validate(JSON.parse($('json').value)); download('kb-sorgente.json', JSON.stringify(d, null, 2)); }
+  catch(e) { st('st-json', 'Correggi prima il JSON: ' + e.message, 'bad'); }
+});
+function download(name, text){
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], {type:'application/json'})); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+}
+if (!window.crypto || !crypto.subtle) document.querySelector('main').insertAdjacentHTML('afterbegin', '<div class="warn">Questo browser non permette la cifratura da qui. Apri la pagina da Chrome o Edge sul PC, oppure dall\'indirizzo dell\'app su GitHub Pages.</div>');
+</script>
+</body>
+</html>
