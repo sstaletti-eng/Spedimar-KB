@@ -1015,7 +1015,8 @@ function mdInline(s){
   return s.replace(/\u0000(\d+)\u0000/g, (_,n)=>'<code>'+esc(codes[+n])+'</code>');
 }
 function md(src){
-  const L = String(src).replace(/\r/g,'').split('\n');
+  // blocchi ``` scritti dentro una riga (es. "Connection string: ```text Server=...```") → codice in linea
+  const L = String(src).replace(/\r/g,'').replace(/```[a-zA-Z]*[ \t]*([^`\n]+?)[ \t]*```/g, (m, c) => '`' + c + '`').split('\n');
   const out = []; let i = 0; let para = [];
   const flush = ()=>{ if (para.length){ out.push('<p>'+para.map(mdInline).join('<br>')+'</p>'); para = []; } };
   const isTableSep = s => /^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/.test(s);
