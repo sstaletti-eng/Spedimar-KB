@@ -1240,8 +1240,10 @@ async function getModels(){
 }
 function fixPreferred(list){ if (list && list.length && cfg.model && !list.includes(cfg.model)) { cfg.model = list[0]; if (cfg.lastGood && !list.includes(cfg.lastGood.m)) delete cfg.lastGood; saveCfg(); } }
 function populateModels(list){
-  const sel = $('s-model'); const cur = cfg.model || list[0] || 'gemini-2.5-flash';
-  const all = rankModels([cur, ...(list && list.length ? list : FALLBACK_MODELS)]);
+  const sel = $('s-model');
+  const L = Array.isArray(list) && list.length ? list : FALLBACK_MODELS;
+  const cur = cfg.model || rankModels(L)[0];
+  const all = rankModels([cur, ...L]);
   sel.innerHTML = all.map(n=>`<option value="${esc(n)}">${esc(n)}${n===all[0] && !cfg.model ? ' (consigliato)':''}</option>`).join('');
   sel.value = cur;
 }
